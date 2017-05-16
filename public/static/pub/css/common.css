@@ -1,0 +1,21 @@
+@charset "utf-8";
+
+.iconbig-warn {
+    background: url(../images/war.png) no-repeat 0 0;
+    display: inline-block;
+    padding: 0;
+    border: 0;
+    width: 75px;
+    height: 75px;
+}
+
+.iconbig-success {
+    background: url(../images/sur.png) no-repeat 0 0;
+    display: inline-block;
+    padding: 0;
+    border: 0;
+    width:75px;
+    height:75px
+}
+
+
