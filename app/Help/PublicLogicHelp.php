@@ -40,7 +40,7 @@ if(!function_exists('jumpPage'))
         if (($msg1 && !is_array($msg1)) || ($msg2 && !is_array($msg2))) {
             return false;
         }
-        if (!$msg1 || !$msg2) {
+        if (!$msg1 && !$msg2) {
             if (isset($_SERVER['HTTP_REFERER'])) {
                 $msg1['返回'] = $_SERVER['HTTP_REFERER'];
             }
@@ -55,5 +55,47 @@ if(!function_exists('jumpPage'))
         }
         $data['type'] = $type;
         return view('admin.jump.jump', $data);
+    }
+
+    if (!function_exists('timeDiff')) {
+        /**
+         * 计算两个时间差
+         * @param str $time1 起始时间
+         * @param str $time2 结束时间
+         * @param str $format 获取参数
+         * @return str
+         */
+        function timeDiff($time1, $time2, $format = 'y年m月d天h小时i分s秒')
+        {
+            if ($time1>$time2) {
+                return false;
+            }
+            $date1 = new DateTime($time1);
+            $date2 = new DateTime($time2);
+            $interval = $date1->diff($date2);
+            $interval = get_object_vars($interval);
+            foreach (array_reverse($interval) as $key => $value) {
+                $format = str_replace($key, $value, $format);
+            }
+            return $format;
+        }
+    }
+
+    if (!function_exists('toArray')) {
+        /**
+         * 对象转数组
+         * @param boject $boject 对象
+         * @return array
+         */
+        function toArray($boject)
+        {
+            $array = is_object($boject) ? get_object_vars($boject) : $boject;
+            $retArray = array();
+            foreach ($array as $key => $value) {
+                $value = (is_array($value) || is_object($value)) ? toArray($value) : $value;
+                $retArray[$key] = $value;
+            }
+            return $retArray;
+        }
     }
 }

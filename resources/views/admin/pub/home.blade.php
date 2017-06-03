@@ -1,6 +1,10 @@
 <?php
 use App\Model\Admin\AdminSession;
+use App\Model\Admin\AdminPermission;
 $userHead = AdminSession::getAdminInfo('AdminInfo');
+$permissionHead = new AdminPermission();
+$menu = $permissionHead->getMenu();
+$showTitle = $permissionHead->showTitle();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,6 +19,8 @@ $userHead = AdminSession::getAdminInfo('AdminInfo');
     <link rel="stylesheet" type="text/css"  href="{{URL::asset('static/admin/css/default.css')}}" id="skin-switcher" >
     <link href="{{URL::asset('static/admin/css/font-awesome.min.css')}}" rel="stylesheet">
     <link href="{{URL::asset('static/admin/css/jquery-accordion-menu.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{URL::asset('static/admin/css/bootstrap.min.css')}}" rel="stylesheet" />
+    <link href="{{URL::asset('static/admin/css/paper-dashboard.css')}}" rel="stylesheet"/>
     <script src="{{URL::asset('static/admin/js/jquery-1.11.2.min.js')}}" type="text/javascript"></script>
     <script src="{{URL::asset('static/admin/js/jquery-accordion-menu.js')}}" type="text/javascript"></script>
     @yield('href')
@@ -23,7 +29,7 @@ $userHead = AdminSession::getAdminInfo('AdminInfo');
 <header class="navbar clearfix" id="header">
     <div class="container">
         <div class="navbar-brand">
-            <a href="index.html">
+            <a href="{{url('admin')}}">
                 <img src="{{URL::asset('static/admin/img/logo.png')}}" alt="Cloud Admin Logo" class="img-responsive" height="30" width="120">
             </a>
         </div>
@@ -37,12 +43,13 @@ $userHead = AdminSession::getAdminInfo('AdminInfo');
             </li>
             <li class="dropdown user" id="header-user">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <img alt="" src="{{URL::asset('static/admin/img/user.jpg')}}">
                     <span class="username">{{$userHead['userName']}}</span>
                     <i class="fa fa-angle-down username"></i>
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="{{url('admin/changePassword')}}"><i class="fa fa-user"></i> 修改密码 </a></li>
-                    <li><a href="{{url('admin/loginOut')}}}"><i class="fa fa-cog"></i> 退出登录 </a></li>
+                    <li><a href="{{url('admin/resetPassword')}}"><i class="fa fa-user"></i> 修改密码 </a></li>
+                    <li><a href="{{url('admin/loginOut')}}"><i class="fa fa-cog"></i> 退出登录 </a></li>
                 </ul>
             </li>
         </ul>
@@ -52,14 +59,37 @@ $userHead = AdminSession::getAdminInfo('AdminInfo');
 <section id="page">
     <div id="sidebar" class="sidebar">
         <div class="sidebar-menu nav-collapse">
-            <div class="divide-20"></div>
-            @yield('leftMenu')
+            <div class="content">
+                <div id="jquery-accordion-menu" class="jquery-accordion-menu red">
+                    <ul id="demo-list">
+                        @foreach($menu['data'] as $title => $list)
+                            <li>
+                                <a href="#"><i class="fa fa-bars"></i>{{$title}} </a>
+                                <ul class="submenu" @if($title == $showTitle)style="display: block;"@endif>
+                                    @foreach($list as $value)
+                                        <li><a href="{{url($value['url'])}}">{{$value['name']}}</a></li>
+                                    @endforeach
+                                </ul>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
+    <div class="main-panel">
     @yield('content')
+    </div>
 </section>
 <script type="text/javascript">
     jQuery("#jquery-accordion-menu").jqueryAccordionMenu();
+    $("#header-user").click(function(){
+        if ($(this).hasClass("open")) {
+            $(this).removeClass("open");
+        } else {
+            $(this).addClass("open");
+        }
+    });
 </script>
 </body>
 </html>

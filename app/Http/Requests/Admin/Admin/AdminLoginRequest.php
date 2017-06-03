@@ -1,6 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+/**
+ * @author dazhen
+ * @example 用于后台登陆验证
+ */
+
+namespace App\Http\Requests\Admin\Admin;
 
 use App\Http\Requests\Request;
 
@@ -24,7 +29,7 @@ class AdminLoginRequest extends Request
     public function rules()
     {
         return [
-            'UserName' => 'required|alpha_dash|min:5|max:16|isin:admin_user,username',
+            'UserName' => 'required|alpha_dash|min:5|max:16|exists:admin_user,username',
             'PassWord' => 'required|min:6',
         ];
     }
@@ -36,7 +41,7 @@ class AdminLoginRequest extends Request
             'UserName.alpha_dash'  => '用户名不能包含特殊字符！',
             'UserName.min' => '用户名不能小于5个字符！',
             'UserName.max'  => '用户名不能大于16字符！',
-            'UserName.isin'  => '用户名不存在！',
+            'UserName.exists'  => '用户名不存在！',
             'PassWord.required' => '密码不能为空！',
             'PassWord.min' => '密码不能小于6个字符！',
         ];

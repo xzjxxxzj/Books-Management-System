@@ -94,7 +94,7 @@
   list-style: none outside none;
   margin: 0;
   max-width: 300px;
-  min-width: 166px;
+  min-width: 115px;
   padding: 0;
   position: absolute;
   text-shadow: none;
@@ -762,4 +762,13 @@
   -o-text-overflow:ellipsis;
   white-space:nowrap;
   width:100%;
+}
+
+.setright {
+	float:right;
+	margin-right:200px;
+}
+
+.red {
+	color:red;
 }

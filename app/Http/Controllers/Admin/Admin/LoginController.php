@@ -5,9 +5,8 @@
  * @example 用于管理员登陆
  */
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\Admin;
 
-use App\User;
 use App\Http\Controllers\Controller;
 use App\Model;
 use App\Http\Requests;
@@ -23,9 +22,9 @@ class LoginController extends Controller
     {
         $user = Model\Admin\AdminSession::getAdminInfo('AdminInfo');
         if(!$user) {
-            return view('admin.login');
+            return view('admin.admin.login');
         } else {
-            return redirect('admin/home');
+            return redirect('admin');
         }
     }
 
@@ -33,16 +32,16 @@ class LoginController extends Controller
      * 登录信息提交控制器
      */
 
-    public function doLogin(Requests\Admin\AdminLoginRequest $request)
+    public function doLogin(Requests\Admin\Admin\AdminLoginRequest $request)
     {
         $user = Model\Admin\AdminSession::getAdminInfo('AdminInfo');
         if($user) {
-            return redirect('admin/home');
+            return redirect('admin');
         }
-        $logic = new Model\Admin\AdminLogin();
+        $logic = new Model\Admin\Admin\AdminLogin();
         $login = $logic->userLogin($request->all());
         if ($login['code'] == '1') {
-            return redirect('admin/home');
+            return redirect('admin');
         } else {
             return jumppage(false, array('登陆失败' => $login['msg']), array('返回' => url('admin/login')));
         }
