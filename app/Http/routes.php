@@ -88,3 +88,12 @@ Route::group(['namespace' => 'Admin\Book'], function()
     Route::get('admin/book/setBookType/{typeId}', 'BookController@setBookType')->where('typeId', '[0-9]+');
     Route::post('admin/book/updateBookType', 'BookController@updateBookType');
 });
+
+/**
+ * 后台用户管理
+ */
+Route::group(['namespace' => 'Admin\User'], function()
+{
+    //用户列表
+    Route::get('admin/user/userList', 'UserController@userList');
+});

@@ -9,7 +9,6 @@ namespace App\Model\Admin\Book;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
-use App\Model\Admin\AdminSession;
 
 class BookLogic extends Model
 {

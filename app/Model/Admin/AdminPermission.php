@@ -127,7 +127,7 @@ class AdminPermission extends Model
      */
     public function showTitle()
     {
-        $path = trim($_SERVER['REQUEST_URI'],'/');
+        $path = trim($_SERVER['REDIRECT_URL'],'/');
         if ($path == 'admin') {
             return '';
         }
