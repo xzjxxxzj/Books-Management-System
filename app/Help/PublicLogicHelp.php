@@ -81,21 +81,18 @@ if(!function_exists('jumpPage'))
         }
     }
 
-    if (!function_exists('toArray')) {
+    if (!function_exists('objectToArray')) {
         /**
          * 对象转数组
-         * @param boject $boject 对象
+         * @param object $object 对象
          * @return array
          */
-        function toArray($boject)
+        function objectToArray($object)
         {
-            $array = is_object($boject) ? get_object_vars($boject) : $boject;
-            $retArray = array();
-            foreach ($array as $key => $value) {
-                $value = (is_array($value) || is_object($value)) ? toArray($value) : $value;
-                $retArray[$key] = $value;
+            if (!is_object($object) && !is_array($object)) {
+                return $object;
             }
-            return $retArray;
+            return json_decode(json_encode($object), true);
         }
     }
 }

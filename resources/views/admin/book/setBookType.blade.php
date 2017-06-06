@@ -17,7 +17,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>类别名称：</label>{{$errors->first('typeName')}}
-                                            <input type="text" class="form-control border-input" name="typeName" placeholder="请输入类别名称" value="{{old('typeName') ? old('typeName') : $typeInfo['typename']}}">
+                                            <input type="text" class="form-control border-input" name="typeName" placeholder="请输入类别名称" value="{{old('typeName') ? old('typeName') : $typeInfo['typeName']}}">
                                         </div>
                                     </div>
                                 </div>
@@ -33,7 +33,7 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <input type="hidden" name="typeId" value="{{$typeInfo['typeid']}}"/>
+                                    <input type="hidden" name="typeId" value="{{$typeInfo['typeId']}}"/>
                                     <input type="hidden" name="_token" value="{{csrf_token()}}"/>
                                     <button type="submit" class="btn btn-info btn-fill btn-wd">确认添加</button>
                                 </div>

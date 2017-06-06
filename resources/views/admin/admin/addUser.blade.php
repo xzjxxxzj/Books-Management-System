@@ -32,8 +32,8 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>密码：</label>{{$errors->first('password')}}
-                                            <input type="password" class="form-control border-input" name="password" placeholder="请输入密码：6-20位字符" value="">
+                                            <label>密码：</label>{{$errors->first('passWord')}}
+                                            <input type="password" class="form-control border-input" name="passWord" placeholder="请输入密码：6-20位字符" value="">
                                         </div>
                                     </div>
                                 </div>

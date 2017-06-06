@@ -39,7 +39,7 @@ class AdminPermission extends Model
                     ->get();
         $userJurisdiction = array();
         if ($jurisdiction) {
-            $jurisdiction = get_object_vars($jurisdiction);
+            $jurisdiction = objectToArray($jurisdiction);
             if ($jurisdiction['jurisdiction']) {
                 $userJurisdiction = explode(',', trim($jurisdiction['jurisdiction'], ','));
             }
@@ -91,11 +91,11 @@ class AdminPermission extends Model
                     ->orderBy('sort', 'desc')
                     ->get();
         if ($menuList) {
-            $menuList = toArray($menuList);
+            $menuList = objectToArray($menuList);
             //获取项目列表
             $menuName = array();
             foreach ($menuList as $key => $value) {
-                if ($value['parentid'] == '0') {
+                if ($value['parentId'] == '0') {
                     $menu["{$value['id']}"] = array();
                     $menuName["{$value['id']}"] = $value['name'];
                     unset($menuList["$key"]);
@@ -103,10 +103,10 @@ class AdminPermission extends Model
             }
             //获取项目子项目
             foreach ($menuList as $value) {
-                if (!isset($menu["{$value['parentid']}"]) || $this->userInfo['userGroup'] != '1' && !in_array($value['id'], $userPer['data'])) {
+                if (!isset($menu["{$value['parentId']}"]) || $this->userInfo['userGroup'] != '1' && !in_array($value['id'], $userPer['data'])) {
                     continue;
                 }
-                $menu["{$value['parentid']}"][] = $value;
+                $menu["{$value['parentId']}"][] = $value;
             }
             $menu = array_combine($menuName, $menu);
             //去掉空项目
@@ -131,9 +131,13 @@ class AdminPermission extends Model
         if ($path == 'admin') {
             return '';
         }
+        $pathArray = explode('/', $path);
+        if (count($pathArray) > 3) {
+            $path = $pathArray['0'] . '/' . $pathArray['1'] . '/' . $pathArray['2'];
+        }
         $parentId = DB::table('admin_menu')
                   ->where('url', $path)
-                  ->value('parentid');
+                  ->value('parentId');
         if ($parentId) {
             $name = DB::table('admin_menu')
                       ->where('id', $parentId)

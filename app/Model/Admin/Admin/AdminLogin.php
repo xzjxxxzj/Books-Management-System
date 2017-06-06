@@ -23,24 +23,24 @@ class AdminLogin extends Model
     public function userLogin($data)
     {
         $user = DB::table('admin_user')
-            ->where('username', $data['UserName'])
+            ->where('userName', $data['userName'])
             ->first();
         if (!$user) {
             return array('code' => '0', 'msg' => '用户不存在！');
         }
-        $user = get_object_vars($user);
+        $user = objectToArray($user);
         $ip = getIp();
-        if (!empty($user['limitip'])) {
-            $limitIp = explode(',', $user['limitip']);
+        if (!empty($user['limitIp'])) {
+            $limitIp = explode(',', $user['limitIp']);
             if (!in_array($ip, $limitIp)) {
                 return array('code' => '0', 'msg' => 'Ip地址不正确！');
             }
         }
-        if ($user['errornum'] >= config('config.adminPassError') || $user['status'] == '1') {
+        if ($user['errorNum'] >= config('config.adminPassError') || $user['status'] == '1') {
             return array('code' => '0', 'msg' => '账号被限制登陆！');
         }
-        $passWord = md5(md5($user['passcode']) . md5($data['PassWord']));
-        if ($passWord != $user['password']) {
+        $passWord = md5(md5($user['passCode']) . md5($data['passWord']));
+        if ($passWord != $user['passWord']) {
             $this->addDataLog($user);
             return array('code' => '0', 'msg' => '密码错误！');
         }
@@ -64,16 +64,16 @@ class AdminLogin extends Model
             $userInfo = DB::table('admin_user')
                 ->where('id', $userId)
                 ->first();
-            $userInfo = get_object_vars($userInfo);
+            $userInfo = objectToArray($userInfo);
         }
         $sessionData = [
             'userId' => $userInfo['id'],
             'userGroup' => $userInfo['group'],
-            'groupLeader' => $userInfo['groupleader'],
+            'groupLeader' => $userInfo['groupLeader'],
             'shopId' => $userInfo['shop'],
-            'userName' => $userInfo['username'],
-            'lastLoginIp' => $userInfo['lastloginip'],
-            'lastLoginTime' => $userInfo['lastlogintime']
+            'userName' => $userInfo['userName'],
+            'lastLoginIp' => $userInfo['lastLoginIp'],
+            'lastLoginTime' => $userInfo['lastLoginTime']
         ];
        AdminSession::setAdminInfo('AdminInfo', $sessionData);
        return true;
@@ -92,9 +92,9 @@ class AdminLogin extends Model
         DB::table('admin_login_log')
             ->insert(
             [
-                'userid' => $user['id'],
-                'username' => $user['username'],
-                'loginip' => getIp(),
+                'userId' => $user['id'],
+                'userName' => $user['userName'],
+                'loginIp' => getIp(),
                 'time' => time(),
                 'status' => $status
             ]
@@ -104,20 +104,20 @@ class AdminLogin extends Model
                 ->where('id', $user['id'])
                 ->update(
                     [
-                        'errornum' => '0',
-                        'updatetime' => time(),
-                        'lastloginip' => getIp(),
-                        'lastlogintime' => time()
+                        'errorNum' => '0',
+                        'updateTime' => time(),
+                        'lastLoginIp' => getIp(),
+                        'lastLoginTime' => time()
                     ]
                 );
         } else {
             DB::table('admin_user')
                 ->where('id', $user['id'])
                 ->increment(
-                    'errornum',
+                    'errorNum',
                     '1',
                     [
-                        'updatetime' => time()
+                        'updateTime' => time()
                     ]
                 );
         }

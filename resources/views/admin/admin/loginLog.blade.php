@@ -24,10 +24,10 @@
                                 <tbody>
                                 @foreach($list as $value)
                                     <tr>
-                                        <td>{{$value->username}}</td>
+                                        <td>{{$value->userName}}</td>
                                         <td>{{$value->status == 1 ? '成功' : '失败'}}</td>
                                         <td>{{date('Y-m-d H:i:s', $value->time)}}</td>
-                                        <td>{{$value->loginip}}</td>
+                                        <td>{{$value->loginIp}}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>

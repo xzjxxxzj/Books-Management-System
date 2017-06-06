@@ -17,7 +17,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>商店名称：</label>{{$errors->first('shopName')}}
-                                            <input type="text" class="form-control border-input" name="shopName" placeholder="请输入商店名称" value="{{old('shopName') ? old('shopName') : $shopInfo['shopname']}}">
+                                            <input type="text" class="form-control border-input" name="shopName" placeholder="请输入商店名称" value="{{old('shopName') ? old('shopName') : $shopInfo['shopName']}}">
                                         </div>
                                     </div>
                                 </div>
@@ -33,7 +33,7 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <input type="hidden" name="shopId" value="{{$shopInfo['shopid']}}"/>
+                                    <input type="hidden" name="shopId" value="{{$shopInfo['shopId']}}"/>
                                     <input type="hidden" name="_token" value="{{csrf_token()}}"/>
                                     <button type="submit" class="btn btn-info btn-fill btn-wd">确认添加</button>
                                 </div>

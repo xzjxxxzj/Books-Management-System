@@ -2,7 +2,7 @@
 
 /**
  * @author dazhen
- * @example 用于管理员登陆
+ * @example 用于图书管理
  */
 
 namespace App\Http\Controllers\Admin\Book;
@@ -50,12 +50,73 @@ class BookController extends Controller
 
     public function addBook()
     {
-        return view('admin.book.addBook');
+        $bookLogic = new Model\Admin\Book\BookLogic();
+        $addInfo = $bookLogic->getAddInfo($this->userInfo);
+        return view('admin.book.addBook', $addInfo['data']);
+    }
+
+    /**
+     * 图书图片上传
+     */
+
+    public function addBookImage()
+    {
+        $files = new Model\UpFile(config('config.upfile'));
+        $upfiles = $files->upFile($_FILES['files']);
+        if ($upfiles) {
+            $bookLogic = new Model\Admin\Book\BookLogic();
+            $add = $bookLogic->addBookImage($upfiles);
+            if ($add['code'] == '1') {
+                $data = array('fileId'=> $add['data'], 'files' => $upfiles);
+                return response()->json(array('code' => '1', 'msg' => '上传成功！', 'data' => $data));
+            }
+        }
+        return array('code' => '0', 'msg' => '上传失败！', 'data' => '');
+    }
+
+    /**
+     * 图书添加保存
+     */
+
+    public function addBookInfo(Requests\Admin\Book\BookAddBookRequest $request)
+    {
+        $bookLogic = new Model\Admin\Book\BookLogic();
+        $add = $bookLogic->addBook($request->all(), $this->userInfo);
+        if ($add['code'] != '1') {
+            return jumpPage(false, array('添加失败' => $add['msg']), array('返回' => url('admin/book/bookList')));
+        }
+        return jumpPage(true, array('添加成功' => '添加图书成功！'), array('返回' => url('admin/book/bookList')));
+    }
+
+    /**
+     * 图书信息修改
+     */
+
+    public function updateBookInfo(Requests\Admin\Book\BookUpdateBookRequest $request)
+    {
+        $bookLogic = new Model\Admin\Book\BookLogic();
+        $add = $bookLogic->updateBook($request->all(), $this->userInfo);
+        if ($add['code'] != '1') {
+            return jumpPage(false, array('修改失败' => $add['msg']), array('返回' => url('admin/book/bookList')));
+        }
+        return jumpPage(true, array('修改成功' => '修改图书成功！'), array('返回' => url('admin/book/bookList')));
+    }
+
+    /**
+     * 修改图书
+     */
+
+    public function setBookInfo($bookId)
+    {
+        $bookLogic = new Model\Admin\Book\BookLogic();
+        $bookInfo = $bookLogic->getBookInfo($bookId, $this->userInfo);
+        return view('admin.book.setBookInfo', $bookInfo['data']);
     }
 
     /**
      * 图书类别列表
      */
+
     public function bookType()
     {
         $bookLogic = new Model\Admin\Book\BookLogic();
@@ -80,7 +141,7 @@ class BookController extends Controller
     public function setAddBookType(Requests\Admin\Book\BookSetAddBookTypeRequest $request)
     {
         $bookLogic = new Model\Admin\Book\BookLogic();
-        $addBookType = $bookLogic->addUserGroup($request->all());
+        $addBookType = $bookLogic->addBookType($request->all());
         if ($addBookType['code'] != '1') {
             return jumpPage(false, array('添加失败' => $addBookType['msg']), array('返回' => url('admin/book/bookType')));
         }

@@ -25,22 +25,22 @@ class AdminSysSet extends Model
         $user = DB::table('admin_user')
             ->where('id', $userInfo['userId'])
             ->first();
-        $user = get_object_vars($user);
+        $user = objectToArray($user);
 
-        $oldPassword = md5(md5($user['passcode'] ) . md5($data['oldPassword']));
-        if ($user['password'] != $oldPassword) {
+        $oldPassword = md5(md5($user['passCode'] ) . md5($data['oldPassword']));
+        if ($user['passWord'] != $oldPassword) {
             return array('code' => '0', 'msg' => '旧密码错误！', 'data' => '');
         }
         $passwordCode = str_random('6');
-        $newPassword = md5(md5($passwordCode) . md5($data['password']));
+        $newPassword = md5(md5($passwordCode) . md5($data['passWord']));
         DB::table('admin_user')
             ->where('id', $userInfo['userId'])
             ->update(
                 [
-                    'errornum' => '0',
-                    'updatetime' => time(),
-                    'passcode' => $passwordCode,
-                    'password' => $newPassword
+                    'errorNum' => '0',
+                    'updateTime' => time(),
+                    'passCode' => $passwordCode,
+                    'passWord' => $newPassword
                 ]
             );
         return array('code' => '1', 'msg' => '修改成功！', 'data' => '');
@@ -57,11 +57,11 @@ class AdminSysSet extends Model
         //管理员查询条件
         if ($userInfo['userGroup'] == '1') {
             $getUser = $table->paginate(10);
-        } elseif ($userInfo['groupleader'] == '1') {
+        } elseif ($userInfo['groupLeader'] == '1') {
             $getUser = $table->where(
                 [
                     'group' => $userInfo['userGroup'],
-                    'shopid' => $userInfo['shopId']
+                    'shopId' => $userInfo['shopId']
                 ]
             )->paginate(10);
         } else {
@@ -85,27 +85,27 @@ class AdminSysSet extends Model
         if ($userInfo['userGroup'] == '1') {
             $groupInfo = $groupTable
                 ->where('status', '0')
-                ->lists('groupid', 'groupname');
+                ->lists('groupId', 'groupName');
             $shopInfo = $shopTable
                 ->where('status', '0')
-                ->lists('shopid', 'shopname');
+                ->lists('shopId', 'shopName');
         } else {
             $groupInfo = $groupTable
                 ->where(
                     [
-                        'groupid' => $userInfo['userGroup'],
+                        'groupId' => $userInfo['userGroup'],
                         'status' => '0',
                     ]
                 )
-                ->lists('groupid', 'groupname');
+                ->lists('groupId', 'groupName');
             $shopInfo = $shopTable
                 ->where(
                     [
-                        'shopid' => $userInfo['shopId'],
+                        'shopId' => $userInfo['shopId'],
                         'status' => '0',
                     ]
                 )
-                ->lists('shopid', 'shopname');
+                ->lists('shopId', 'shopName');
         }
         return array('code' => '1', 'msg' => '查询成功！', 'data' => array('groupInfo' => $groupInfo, 'shopInfo' => $shopInfo));
     }
@@ -119,7 +119,7 @@ class AdminSysSet extends Model
     public function setAddUser($data, $userInfo)
     {
         $passwordCode = str_random('6');
-        $password = md5(md5($passwordCode) . md5($data['password']));
+        $password = md5(md5($passwordCode) . md5($data['passWord']));
         if ($userInfo['userGroup'] == '1') {
             $group = $data['group'];
             $shop = $data['shop'];
@@ -130,13 +130,13 @@ class AdminSysSet extends Model
         DB::table('admin_user')
             ->insert(
                 [
-                    'username' => $data['userName'],
-                    'realname' => $data['realName'],
-                    'passcode' => $passwordCode,
-                    'password' => $password,
+                    'userName' => $data['userName'],
+                    'realName' => $data['realName'],
+                    'passCode' => $passwordCode,
+                    'passWord' => $password,
                     'group' => $group,
                     'shop' => $shop,
-                    'createtime' => time()
+                    'createTime' => time()
                 ]
             );
         return array('code' => '1', 'msg' => '添加成功！', 'data' => '');
@@ -160,7 +160,7 @@ class AdminSysSet extends Model
         if (!$setUser) {
             return array('code' => '0', 'msg' => '用户不存在！', 'data' => '');
         }
-        $setUser = get_object_vars($setUser);
+        $setUser = objectToArray($setUser);
         //当操作用户非管理员的时候 判断是否为组长 及用户是否属于该组的组员
         if ($userInfo['userGroup'] != '1') {
             if ($setUser['group'] != $userInfo['userGroup'] || $setUser['groupleader']=='1') {
@@ -172,7 +172,7 @@ class AdminSysSet extends Model
             ->update(
                 [
                     'status' => $status,
-                    'updatetime' => time()
+                    'updateTime' => time()
                 ]
             );
         return array('code' => '1', 'msg' => '操作成功！', 'data' => '');
@@ -196,11 +196,11 @@ class AdminSysSet extends Model
         if (!$setUser) {
             return array('code' => '0', 'msg' => '用户不存在！', 'data' => '');
         }
-        $setUser = get_object_vars($setUser);
+        $setUser = objectToArray($setUser);
         if ($userInfo['userGroup'] != '1' && $setUser['group'] != $userInfo['userGroup']) {
             return array('code' => '0', 'msg' => '您没有权限！', 'data' => '');
         }
-        $setUser['limitip'] = empty($setUser['limitip']) ? '' : explode(',', $setUser['limitip']);
+        $setUser['limitIp'] = empty($setUser['limitIp']) ? '' : explode(',', $setUser['limitIp']);
         return array('code' => '1', 'msg' => '查询成功！', 'data' => $setUser);
     }
 
@@ -216,7 +216,7 @@ class AdminSysSet extends Model
         if ($setInfo['code'] != '1') {
             return $setInfo;
         }
-        $userIpList = $setInfo['data']['limitip'];
+        $userIpList = $setInfo['data']['limitIp'];
         $ipNum = count($userIpList);
 
         if ($data['type'] == '1') {
@@ -240,8 +240,8 @@ class AdminSysSet extends Model
             ->where('id', $data['userId'])
             ->update(
                 [
-                    'limitip' => $limitIp,
-                    'updatetime' => time()
+                    'limitIp' => $limitIp,
+                    'updateTime' => time()
                 ]
             );
         return array('code' => '1', 'msg' => '操作成功！', 'data' => '');
@@ -266,7 +266,7 @@ class AdminSysSet extends Model
         if (!$setUser) {
             return array('code' => '0', 'msg' => '用户不存在！', 'data' => '');
         }
-        $setUser = get_object_vars($setUser);
+        $setUser = objectToArray($setUser);
         if ($userInfo['userGroup'] != '1' && $setUser['group'] != $userInfo['userGroup']) {
             return array('code' => '0', 'msg' => '您没有权限！', 'data' => '');
         }
@@ -288,15 +288,15 @@ class AdminSysSet extends Model
         }
 
         $passwordCode = str_random('6');
-        $newPassword = md5(md5($passwordCode) . md5($data['password']));
+        $newPassword = md5(md5($passwordCode) . md5($data['passWord']));
         DB::table('admin_user')
             ->where('id', $data['userId'])
             ->update(
                 [
-                    'errornum' => '0',
-                    'updatetime' => time(),
-                    'passcode' => $passwordCode,
-                    'password' => $newPassword
+                    'errorNum' => '0',
+                    'updateTime' => time(),
+                    'passCode' => $passwordCode,
+                    'passWord' => $newPassword
                 ]
             );
         return array('code' => '1', 'msg' => '修改成功！', 'data' => '');
@@ -334,8 +334,8 @@ class AdminSysSet extends Model
         DB::table('admin_group')
             ->insert(
                 [
-                    'groupname' => $data['groupName'],
-                    'createtime' => time(),
+                    'groupName' => $data['groupName'],
+                    'createTime' => time(),
                 ]
             );
         return array('code' => '1', 'msg' => '添加成功！', 'data' => '');
@@ -354,12 +354,12 @@ class AdminSysSet extends Model
             return array('code' => '0', 'msg' => '您没有权限！', 'data' => '');
         }
         $groupInfo = DB::table('admin_group')
-            ->where('groupid', $groupId)
+            ->where('groupId', $groupId)
             ->first();
         if (!$groupInfo) {
             return array('code' => '0', 'msg' => '用户组不存在！', 'data' => '');
         }
-        $groupInfo = get_object_vars($groupInfo);
+        $groupInfo = objectToArray($groupInfo);
         return array('code' => '1', 'msg' => '查询成功！', 'data' => $groupInfo);
     }
 
@@ -376,12 +376,12 @@ class AdminSysSet extends Model
             return array('code' => '0', 'msg' => '您没有权限！', 'data' => '');
         }
         DB::table('admin_group')
-            ->where('groupid', $data['groupId'])
+            ->where('groupId', $data['groupId'])
             ->update(
                 [
-                    'groupname' => $data['groupName'],
+                    'groupName' => $data['groupName'],
                     'status' => $data['status'],
-                    'updatetime' => time(),
+                    'updateTime' => time(),
                 ]
             );
         return array('code' => '1', 'msg' => '更新成功！', 'data' => '');
@@ -419,8 +419,8 @@ class AdminSysSet extends Model
         DB::table('admin_shop')
             ->insert(
                 [
-                    'shopname' => $data['shopName'],
-                    'createtime' => time(),
+                    'shopName' => $data['shopName'],
+                    'createTime' => time(),
                 ]
             );
         return array('code' => '1', 'msg' => '添加成功！', 'data' => '');
@@ -439,12 +439,12 @@ class AdminSysSet extends Model
             return array('code' => '0', 'msg' => '您没有权限！', 'data' => '');
         }
         $shopInfo = DB::table('admin_shop')
-            ->where('shopid', $shopId)
+            ->where('shopId', $shopId)
             ->first();
         if (!$shopInfo) {
             return array('code' => '0', 'msg' => '用户组不存在！', 'data' => '');
         }
-        $shopInfo = get_object_vars($shopInfo);
+        $shopInfo = objectToArray($shopInfo);
         return array('code' => '1', 'msg' => '查询成功！', 'data' => $shopInfo);
     }
 
@@ -461,12 +461,12 @@ class AdminSysSet extends Model
             return array('code' => '0', 'msg' => '您没有权限！', 'data' => '');
         }
         DB::table('admin_shop')
-            ->where('shopid', $data['shopId'])
+            ->where('shopId', $data['shopId'])
             ->update(
                 [
-                    'shopname' => $data['shopName'],
+                    'shopName' => $data['shopName'],
                     'status' => $data['status'],
-                    'updatetime' => time(),
+                    'updateTime' => time(),
                 ]
             );
         return array('code' => '1', 'msg' => '更新成功！', 'data' => '');
@@ -484,7 +484,7 @@ class AdminSysSet extends Model
             return array('code' => '0', 'msg' => '您没有权限！', 'data' => '');
         }
         $menu = DB::table('admin_menu')
-            ->where('parentid', '0')
+            ->where('parentId', '0')
             ->lists('name','id');
 
         return array('code' => '1', 'msg' => '查询成功！', 'data' => $menu);
@@ -508,8 +508,8 @@ class AdminSysSet extends Model
                     'name' => $data['name'],
                     'url' => trim($data['url'], '/'),
                     'show' => $data['show'],
-                    'parentid' => $data['parentId'],
-                    'createtime' => time(),
+                    'parentId' => $data['parentId'],
+                    'createTime' => time(),
                 ]
             );
 

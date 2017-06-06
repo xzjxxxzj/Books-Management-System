@@ -27,14 +27,14 @@
 								<div class="divide-40"></div>
 								<form role="form" action="{{url('admin/doLogin')}}" method="post">
 								  <div class="form-group">
-									<label>用户名：</label>{{$errors->first('UserName')}}
+									<label>用户名：</label>{{$errors->first('userName')}}
 									<i class="fa fa-user"></i>
-									<input type="text" class="form-control" name="UserName" placeholder="用户名由6-16个字母和数字组成">
+									<input type="text" class="form-control" name="userName" placeholder="用户名由6-16个字母和数字组成">
 								  </div>
 								  <div class="form-group"> 
-									<label>密码：</label>{{$errors->first('PassWord')}}
+									<label>密码：</label>{{$errors->first('passWord')}}
 									<i class="fa fa-lock"></i>
-									<input type="password" class="form-control" name="PassWord" placeholder="密码长度6-20个字符">
+									<input type="password" class="form-control" name="passWord" placeholder="密码长度6-20个字符">
 								  </div>
 								  <div class="form-actions">
 									<button type="submit" class="btn btn-danger">登录</button>

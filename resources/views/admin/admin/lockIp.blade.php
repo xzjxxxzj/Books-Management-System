@@ -17,7 +17,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>用户名：</label>
-                                            <input type="text" class="form-control border-input" disabled value="{{$userInfo['username']}}">
+                                            <input type="text" class="form-control border-input" disabled value="{{$userInfo['userName']}}">
                                         </div>
                                     </div>
                                 </div>
@@ -25,8 +25,8 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>已锁定IP：（最多可锁定10个IP地址）</label><br />
-                                                @if(!empty($userInfo['limitip']))
-                                                    @foreach($userInfo['limitip'] as $value)
+                                                @if(!empty($userInfo['limitIp']))
+                                                    @foreach($userInfo['limitIp'] as $value)
                                                     {{$value}}<br />
                                                     @endforeach
                                                 @endif

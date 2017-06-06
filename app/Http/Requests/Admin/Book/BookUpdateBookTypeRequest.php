@@ -29,9 +29,9 @@ class BookUpdateBookTypeRequest extends Request
     public function rules()
     {
         return [
-            'typeName' => 'required|unique:book_type,typename|regex:/^[0-9a-zA-Z_\-\x{4e00}-\x{9fa5}]+$/u',
+            'typeName' => 'required|unique:book_type,typeName|regex:/^[0-9a-zA-Z_\-\x{4e00}-\x{9fa5}]+$/u',
             'status' => 'required|boolean',
-            'typeId' => 'required|integer|exists:book_type,typeid',
+            'typeId' => 'required|integer|exists:book_type,typeId',
         ];
     }
 

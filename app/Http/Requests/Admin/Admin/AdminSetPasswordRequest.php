@@ -30,8 +30,8 @@ class AdminSetPasswordRequest extends Request
     {
         return [
             'oldPassword' => 'required|min:6|max:20',
-            'password' => 'required|min:6|max:20|different:oldPassword',
-            'rePassword' => 'required|same:password',
+            'passWord' => 'required|min:6|max:20|different:oldPassword',
+            'rePassword' => 'required|same:passWord',
         ];
     }
 
@@ -42,10 +42,10 @@ class AdminSetPasswordRequest extends Request
             'oldPassword.min' => '旧密码不能小于5个字符！',
             'oldPassword.max'  => '旧密码不能大于16字符！',
 
-            'password.different'  => '新密码不能跟旧密码设置一样！',
-            'password.required' => '新密码不能为空！',
-            'password.min' => '新密码不能小于5个字符！',
-            'password.max'  => '新密码不能大于16字符！',
+            'passWord.different'  => '新密码不能跟旧密码设置一样！',
+            'passWord.required' => '新密码不能为空！',
+            'passWord.min' => '新密码不能小于5个字符！',
+            'passWord.max'  => '新密码不能大于16字符！',
 
             'rePassword.same'  => '两次密码不一致！',
             'rePassword.required' => '重复密码不能为空！',

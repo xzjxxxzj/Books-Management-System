@@ -28,10 +28,10 @@
                                 <tbody>
                                 @foreach($userList as $value)
                                 <tr>
-                                    <td>{{$value->username}}</td>
-                                    <td>{{$value->realname}}</td>
+                                    <td>{{$value->userName}}</td>
+                                    <td>{{$value->realName}}</td>
                                     <td>{{$value->status == 1 ? '禁用' : '正常'}}</td>
-                                    <td>{{date('Y-m-d H:i:s', $value->createtime)}}</td>
+                                    <td>{{date('Y-m-d H:i:s', $value->createTime)}}</td>
                                     <td style="text-align: center">
                                         <a href="{{url('admin/setInfo/' . $value->id)}}" title="用户编辑" style="margin-left: 3px;"><i class="fa fa-cog"></i></a>
                                         <a href="{{url('admin/setPermission/' . $value->id)}}" title="权限管理" style="margin-left: 3px;"><i class="fa fa-edit"></i></a>

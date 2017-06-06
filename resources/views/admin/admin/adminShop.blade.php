@@ -27,11 +27,11 @@
                                 <tbody>
                                 @foreach($shopList as $value)
                                     <tr>
-                                        <td>{{$value->shopname}}</td>
+                                        <td>{{$value->shopName}}</td>
                                         <td>{{$value->status == 1 ? '禁用' : '正常'}}</td>
-                                        <td>{{date('Y-m-d H:i:s', $value->createtime)}}</td>
+                                        <td>{{date('Y-m-d H:i:s', $value->createTime)}}</td>
                                         <td style="text-align: center">
-                                            <a href="{{url('admin/setShop/' . $value->shopid)}}" title="商店编辑" style="margin-left: 3px;"><i class="fa fa-cog"></i></a>
+                                            <a href="{{url('admin/setShop/' . $value->shopId)}}" title="商店编辑" style="margin-left: 3px;"><i class="fa fa-cog"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach

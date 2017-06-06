@@ -72,6 +72,15 @@ Route::group(['namespace' => 'Admin\Book'], function()
     //图书列表
     Route::get('admin/book/bookList', 'BookController@bookList');
     Route::get('admin/book/addBook', 'BookController@addBook');
+    Route::post('admin/book/addBookInfo', 'BookController@addBookInfo');
+    Route::post('admin/book/addBookImage', 'BookController@addBookImage');
+    //修改图书
+    Route::get('admin/book/setBookInfo/{bookId}', 'BookController@setBookInfo')->where('shopId', '[0-9]+');
+    Route::post('admin/book/updateBookInfo', 'BookController@updateBookInfo');
+    //借书
+    Route::get('admin/book/borrowBook/{bookId}', 'BookController@borrowBook')->where('shopId', '[0-9]+');
+    //还书列表
+    Route::get('admin/book/returnBook/{bookId}', 'BookController@returnBook')->where('shopId', '[0-9]+');
     //图书类别管理
     Route::get('admin/book/bookType', 'BookController@bookType');
     Route::get('admin/book/addBookType', 'BookController@addBookType');

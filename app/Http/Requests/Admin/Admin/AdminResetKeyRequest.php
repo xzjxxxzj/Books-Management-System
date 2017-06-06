@@ -29,8 +29,8 @@ class AdminResetKeyRequest extends Request
     public function rules()
     {
         return [
-            'userId' => 'required|integer|exists:admin_user,userid',
-            'password' => 'required|min:6|max:20',
+            'userId' => 'required|integer|exists:admin_user,userId',
+            'passWord' => 'required|min:6|max:20',
             'rePassword' => 'required|same:password',
         ];
     }
@@ -42,9 +42,9 @@ class AdminResetKeyRequest extends Request
             'userId.integer' => '用户ID只能为整数！',
             'userId.exists' => '用户ID不存在！',
 
-            'password.required' => '新密码不能为空！',
-            'password.min' => '新密码不能小于5个字符！',
-            'password.max'  => '新密码不能大于16字符！',
+            'passWord.required' => '新密码不能为空！',
+            'passWord.min' => '新密码不能小于5个字符！',
+            'passWord.max'  => '新密码不能大于16字符！',
 
             'rePassword.same'  => '两次密码不一致！',
             'rePassword.required' => '重复密码不能为空！',

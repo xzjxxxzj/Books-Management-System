@@ -29,7 +29,7 @@ class AdminSetAddShopRequest extends Request
     public function rules()
     {
         return [
-            'shopName' => 'required|unique:admin_shop,shopname|regex:/^[0-9a-zA-Z_\-\x{4e00}-\x{9fa5}]+$/u',
+            'shopName' => 'required|unique:admin_shop,shopName|regex:/^[0-9a-zA-Z_\-\x{4e00}-\x{9fa5}]+$/u',
         ];
     }
 

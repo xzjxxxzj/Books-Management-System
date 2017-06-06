@@ -29,7 +29,7 @@ class AdminSetAddGroupRequest extends Request
     public function rules()
     {
         return [
-            'groupName' => 'required|unique:admin_group,groupname|regex:/^[0-9a-zA-Z_\-\x{4e00}-\x{9fa5}]+$/u',
+            'groupName' => 'required|unique:admin_group,groupName|regex:/^[0-9a-zA-Z_\-\x{4e00}-\x{9fa5}]+$/u',
         ];
     }
 

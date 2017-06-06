@@ -29,11 +29,11 @@ class AdminSetAddUserRequest extends Request
     public function rules()
     {
         return [
-            'userName' => 'required|min:6|max:16|alpha_num|unique:admin_user,username',
+            'userName' => 'required|min:6|max:16|alpha_num|unique:admin_user,userName',
             'realName' => 'required|regex:/^[\x{4e00}-\x{9fa5}]+$/u',
             'password' => 'required|min:6|max:20',
-            'group' => 'required|integer|exists:admin_group,groupid,status,1',
-            'shop' => 'required|integer|exists:admin_shop,shopid,status,1',
+            'group' => 'required|integer|exists:admin_group,groupId,status,1',
+            'shop' => 'required|integer|exists:admin_shop,shopId,status,1',
             'groupLeader' => 'integer',
         ];
     }

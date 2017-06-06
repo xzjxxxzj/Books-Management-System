@@ -27,11 +27,11 @@
                                 <tbody>
                                 @foreach($bookType as $value)
                                     <tr>
-                                        <td>{{$value->typename}}</td>
+                                        <td>{{$value->typeName}}</td>
                                         <td>{{$value->status == 1 ? '禁用' : '正常'}}</td>
-                                        <td>{{date('Y-m-d H:i:s', $value->createtime)}}</td>
+                                        <td>{{date('Y-m-d H:i:s', $value->createTime)}}</td>
                                         <td style="text-align: center">
-                                            <a href="{{url('admin/book/setBookType/' . $value->typeid)}}" title="类别编辑" style="margin-left: 3px;"><i class="fa fa-cog"></i></a>
+                                            <a href="{{url('admin/book/setBookType/' . $value->typeId)}}" title="类别编辑" style="margin-left: 3px;"><i class="fa fa-cog"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach

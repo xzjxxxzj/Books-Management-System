@@ -53,23 +53,23 @@
                                 <tbody>
                                 @foreach($bookList as $value)
                                     <tr>
-                                        <td>{{$value->typename}}</td>
-                                        <td>{{$value->bookname}}</td>
-                                        <td>{{$value->shopname}}</td>
-                                        <td>{{$value->outnum}}</td>
-                                        <td>{{$value->leftnum}}</td>
+                                        <td>{{$bookType["{$value->typeId}"]}}</td>
+                                        <td>{{$value->bookName}}</td>
+                                        <td>{{$shopType["{$value->shopId}"]}}</td>
+                                        <td>{{$value->outNum}}</td>
+                                        <td>{{$value->leftNum}}</td>
                                         <td>{{$value->money}}</td>
                                         <td>{{$value->status == 1 ? '上架' : '下架'}}</td>
                                         <td style="text-align: center">
-                                            <a href="{{url('admin/setInfo/' . $value->id)}}" title="图书编辑" style="margin-left: 3px;"><i class="fa fa-cog"></i></a>
-                                            <a href="{{url('admin/resetKey/' . $value->id)}}" title="借出" style="margin-left: 3px;"><i class="fa fa-key"></i></a>
-                                            <a href="{{url('admin/lockIp/' . $value->id)}}" title="归还" style="margin-left: 3px;"><i class="fa fa-lock red"></i></a>
+                                            <a href="{{url('admin/book/setBookInfo/' . $value->bookId)}}" title="图书编辑" style="margin-left: 3px;"><i class="fa fa-cog"></i></a>
+                                            <a href="{{url('admin/book/borrowBook/' . $value->bookId)}}" title="借出" style="margin-left: 3px;"><i class="fa fa-arrow-left"></i></a>
+                                            <a href="{{url('admin/book/returnBook/' . $value->bookId)}}" title="归还" style="margin-left: 3px;"><i class="fa fa-arrow-right"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
                             </table>
-                            {!! $bookList->render() !!}
+                            {!! $bookList->appends($_GET)->render() !!}
                         </div>
                     </div>
                 </div>
@@ -84,11 +84,11 @@
             bookType = {!! json_encode($bookType) !!};
             shopType = {!! json_encode($shopType) !!};
             type = $("#type").val();
-            if (type == 'typeid') {
+            if (type == 'typeId') {
                 valueData = bookType;
-            } else if (type == 'shopid') {
+            } else if (type == 'shopId') {
                 valueData = shopType;
-            } else if (type == 'bookname') {
+            } else if (type == 'bookName') {
                 $("#typeValue").html('').hide();
                 $("#nameValue").html('').show();
                 return true;

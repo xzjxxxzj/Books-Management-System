@@ -17,38 +17,54 @@ class BookLogic extends Model
     /**
      * 获取图书列表
      * @param array $get
-     * @return true
+     * @return array
      */
 
     public function getBookList($get)
     {
         $table = DB::table('book_list');
-        if (!empty($get['type']) && in_array($get['type'], ['typeid', 'shopid']) && !empty($get['typeValue'])) {
+        if (!empty($get['type']) && in_array($get['type'], ['typeId', 'shopId']) && !empty($get['typeValue'])) {
             $table->where($get['type'], $get['typeValue']);
-        } elseif (!empty($get['type']) && in_array($get['type'], ['bookname']) && !empty($get['name'])) {
+        } elseif (!empty($get['type']) && in_array($get['type'], ['bookName']) && !empty($get['name'])) {
             $table->where($get['type'], $get['name']);
         }
-        $bookList =  $table->orderBy('bookid', 'desc')
+        $bookList =  $table->orderBy('bookId', 'desc')
                 ->paginate(10);
 
         $bookType = DB::table('book_type')
-                ->lists('typename', 'typeid');
+                ->lists('typeName', 'typeId');
 
         $shopName = DB::table('admin_shop')
-                ->lists('shopname', 'shopid');
+                ->lists('shopName', 'shopId');
 
         $getType = [
-            'typeid' => '图书类别',
-            'shopid' => '商店名称',
-            'bookname' => '图书名字',
+            'typeId' => '图书类别',
+            'shopId' => '商店名称',
+            'bookName' => '图书名字',
         ];
-
-        foreach ($bookList as $key => $value) {
-            $bookList->$key->typename = $bookType["{$value->typeid}"];
-            $bookList->$key->shopname = $shopName["{$value->shopid}"];
-        }
-
         return array('code' => '1', 'msg' => '查询成功！', 'data' => array('bookList' => $bookList, 'getType' => $getType, 'bookType' => $bookType, 'shopType' => $shopName));
+    }
+
+    /**
+     * 添加图书
+     * @param array $userInfo
+     * @return array
+     */
+
+    public function getAddInfo($userInfo)
+    {
+        $bookType = DB::table('book_type')
+            ->lists('typeName', 'typeId');
+
+        if ($userInfo['userGroup'] != '1') {
+            $shopName = DB::table('admin_shop')
+                ->where('shopId', $userInfo['shopId'])
+                ->lists('shopName', 'shopId');
+        } else {
+            $shopName = DB::table('admin_shop')
+                ->lists('shopName', 'shopId');
+        }
+        return array('code' => '1', 'msg' => '查询成功！', 'data' => array('bookType' => $bookType, 'shopType' => $shopName));
     }
 
     /**
@@ -69,13 +85,13 @@ class BookLogic extends Model
      * @return array
      */
 
-    public function addUserGroup($data)
+    public function addBookType($data)
     {
         DB::table('book_type')
             ->insert(
                 [
-                    'typename' => $data['typeName'],
-                    'createtime' => time(),
+                    'typeName' => $data['typeName'],
+                    'createTime' => time(),
                 ]
             );
         return array('code' => '1', 'msg' => '添加成功！', 'data' => '');
@@ -90,12 +106,12 @@ class BookLogic extends Model
     public function getTypeInfo($typeId)
     {
         $typeInfo = DB::table('book_type')
-            ->where('typeid', $typeId)
+            ->where('typeId', $typeId)
             ->first();
         if (!$typeInfo) {
             return array('code' => '0', 'msg' => '类别不存在！', 'data' => '');
         }
-        $typeInfo = get_object_vars($typeInfo);
+        $typeInfo = objectToArray($typeInfo);
         return array('code' => '1', 'msg' => '查询成功！', 'data' => $typeInfo);
     }
 
@@ -108,14 +124,191 @@ class BookLogic extends Model
     public function updateBookType($data)
     {
         DB::table('book_type')
-            ->where('typeid', $data['typeId'])
+            ->where('typeId', $data['typeId'])
             ->update(
                 [
-                    'typename' => $data['typeName'],
+                    'typeName' => $data['typeName'],
                     'status' => $data['status'],
-                    'updatetime' => time(),
+                    'updateTime' => time(),
                 ]
             );
         return array('code' => '1', 'msg' => '更新成功！', 'data' => '');
+    }
+
+    /**
+     * 更新类别信息
+     * @param array $files
+     * @return array
+     */
+
+    public function addBookImage($files)
+    {
+        $insertId= '';
+        foreach ($files as $value) {
+            $id = DB::table('file')
+                ->insertGetId(
+                    [
+                        'fileName' => $value['name'],
+                        'path' => $value['path'],
+                        'createTime' =>time(),
+                    ]
+                );
+            $insertId .= $id . ',';
+        }
+        return array('code' => '1', 'msg' => '添加成功！', 'data' => trim($insertId, ','));
+    }
+
+    /**
+     * 更新类别信息
+     * @param array $data
+     * @return array
+     */
+
+    public function addBook($data, $userInfo)
+    {
+        if ($userInfo['userGroup'] != '1') {
+            $shopId = $userInfo['shopId'];
+        } else {
+            $shopId = $data['shopId'];
+        }
+
+        $data['bookName'] = htmlspecialchars($data['bookName']);
+        $data['profile'] = htmlspecialchars($data['profile']);
+        DB::table('book_list')
+            ->insert(
+                [
+                    'bookName' => $data['bookName'],
+                    'shopId' => $shopId,
+                    'money' => $data['money'],
+                    'num' => $data['leftNum'],
+                    'leftNum' => $data['leftNum'],
+                    'typeId' => $data['typeId'],
+                    'image' => $data['imagePath'],
+                    'minAge' => $data['minAge'],
+                    'maxAge' => $data['maxAge'],
+                    'profile' => $data['profile'],
+                    'createTime' => time(),
+                ]
+            );
+        if (!empty($data['fileId'])) {
+            $fileId = explode(',', $data['fileId']);
+
+            DB::table('file')
+                ->whereIn('fileid', $fileId)
+                ->update(
+                    [
+                        'status' => '1',
+                        'useMsg' => $data['bookName'] . '图书封面',
+                        'updateTime' => time(),
+                    ]
+                );
+        }
+        return array('code' => '1', 'msg' => '添加成功！', 'data' => '');
+    }
+
+    /**获取图书信息，修改图书用
+     * @param int $bookId
+     * @param array $userInfo
+     * @return array
+     */
+
+    public function getBookInfo($bookId, $userInfo)
+    {
+        $bookType = DB::table('book_type')
+            ->lists('typeName', 'typeId');
+
+        if ($userInfo['userGroup'] != '1') {
+            $shopName = DB::table('admin_shop')
+                ->where('shopId', $userInfo['shopId'])
+                ->lists('shopName', 'shopId');
+        } else {
+            $shopName = DB::table('admin_shop')
+                ->lists('shopName', 'shopId');
+        }
+
+        $bookInfo = DB::table('book_list')
+            ->where('bookId', $bookId)
+            ->first();
+
+        $bookInfo = objectToArray($bookInfo);
+
+        $bookOrder = DB::table('book_order')
+            ->join('user', 'book_order.userId', '=', 'user.userId')
+            ->where('book_order.bookId', $bookId)
+            ->limit(3)
+            ->select('book_order.*', 'user.userName')
+            ->get();
+        $bookOrder = objectToArray($bookOrder);
+        return array('code' => '1', 'msg' => '查询成功！', 'data' => array('bookType' => $bookType, 'shopType' => $shopName, 'bookInfo' => $bookInfo, 'bookOrder'=>$bookOrder));
+    }
+
+    /**获取图书信息，修改图书用
+     * @param array $data
+     * @param array $userInfo
+     * @return array
+     */
+
+    public function updateBook($data, $userInfo)
+    {
+        //获取原图片，方便删除
+        $file = DB::table('book_list')
+            ->where('bookId', $data['bookId'])
+            ->value('image');
+
+        if ($userInfo['userGroup'] != '1') {
+            $shopId = $userInfo['shopId'];
+        } else {
+            $shopId = $data['shopId'];
+        }
+        $data['bookName'] = htmlspecialchars($data['bookName']);
+        $data['profile'] = htmlspecialchars($data['profile']);
+        if ($data['leftNum'] >= 0) {
+            $data['leftNum'] = ' + ' .$data['leftNum'];
+        }
+        DB::table('book_list')
+            ->where('bookId', $data['bookId'])
+            ->update(
+                [
+                    'bookName' => $data['bookName'],
+                    'shopId' => $shopId,
+                    'money' => $data['money'],
+                    'num' => DB::raw('num ' . $data['leftNum']),
+                    'leftNum' => DB::raw('leftNum ' . $data['leftNum']),
+                    'typeId' => $data['typeId'],
+                    'image' => $data['imagePath'],
+                    'minAge' => $data['minAge'],
+                    'maxAge' => $data['maxAge'],
+                    'profile' => $data['profile'],
+                    'updateTime' => time(),
+                ]
+            );
+        //如果图片有修改
+        if ($file != $data['imagePath']) {
+            echo $filePath = public_path($file);
+            //删除图片
+            if (file_exists($filePath))
+            {
+                echo $filePath;
+                unlink($filePath);
+            }
+            DB::table('file')
+                ->where('path', $file)
+                ->delete();
+
+            if (!empty($data['fileId'])) {
+                $fileId = explode(',', $data['fileId']);
+
+                DB::table('file')
+                    ->whereIn('fileid', $fileId)
+                    ->update(
+                        [
+                            'status' => '1',
+                            'useMsg' => $data['bookName'] . '图书封面',
+                            'updateTime' => time(),
+                        ]
+                    );
+            }
+        }
+        return array('code' => '1', 'msg' => '修改成功！', 'data' => '');
     }
 }

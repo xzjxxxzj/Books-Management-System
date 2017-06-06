@@ -29,7 +29,7 @@ class BookSetAddBookTypeRequest extends Request
     public function rules()
     {
         return [
-            'typeName' => 'required|unique:book_type,typename|regex:/^[0-9a-zA-Z_\-\x{4e00}-\x{9fa5}]+$/u',
+            'typeName' => 'required|unique:book_type,typeName|regex:/^[0-9a-zA-Z_\-\x{4e00}-\x{9fa5}]+$/u',
         ];
     }
 
