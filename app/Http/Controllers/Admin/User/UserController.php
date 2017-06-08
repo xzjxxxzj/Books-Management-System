@@ -43,4 +43,29 @@ class UserController extends Controller
         $userList = $userLogic->getUserList($request->all());
         return view('admin.user.userList', $userList['data']);
     }
+
+    /**
+     * 用户借书
+     */
+
+    public function borrowBook(Requests\Admin\User\UserBorrowBookRequest $request)
+    {
+        $userLogic = new Model\Admin\User\UserLogic();
+        $borrow = $userLogic->borrowBook($request->all());
+        if ($borrow['code'] != '1') {
+            return jumpPage(false, array('借书失败' => $borrow['msg']), array('返回' => url('admin/user/userList')));
+        }
+        return jumpPage(true, array('借书成功' => '借书成功！'), array('返回' => url('admin/user/userList')));
+    }
+
+    /**
+     * 用户借书列表
+     */
+
+    public function borrowList(Requests\Admin\User\UserBorrowListRequest $request)
+    {
+        $userLogic = new Model\Admin\User\UserLogic();
+        $borrowList = $userLogic->borrowList($request->all());
+        return view('admin.user.borrowBookList', $borrowList['data']);
+    }
 }

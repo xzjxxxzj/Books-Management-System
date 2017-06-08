@@ -69,7 +69,7 @@
                                         </div>
 
                                         <div class="col-xs-3 text-right">
-                                            @if($value['status'] == '0')
+                                            @if($value['status'] == '1')
                                             {{timeDiff(date('Y-m-d', $value['borrowTime']), date('Y-m-d'), 'days天')}}
                                             @else
                                             {{timeDiff(date('Y-m-d', $value['borrowTime']), date('Y-m-d', $value['repayTime']), 'days天')}}

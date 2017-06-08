@@ -77,10 +77,6 @@ Route::group(['namespace' => 'Admin\Book'], function()
     //修改图书
     Route::get('admin/book/setBookInfo/{bookId}', 'BookController@setBookInfo')->where('shopId', '[0-9]+');
     Route::post('admin/book/updateBookInfo', 'BookController@updateBookInfo');
-    //借书
-    Route::get('admin/book/borrowBook/{bookId}', 'BookController@borrowBook')->where('shopId', '[0-9]+');
-    //还书列表
-    Route::get('admin/book/returnBook/{bookId}', 'BookController@returnBook')->where('shopId', '[0-9]+');
     //图书类别管理
     Route::get('admin/book/bookType', 'BookController@bookType');
     Route::get('admin/book/addBookType', 'BookController@addBookType');
@@ -96,4 +92,7 @@ Route::group(['namespace' => 'Admin\User'], function()
 {
     //用户列表
     Route::get('admin/user/userList', 'UserController@userList');
+    //用户借书
+    Route::post('admin/user/borrowBook', 'UserController@borrowBook');
+    Route::get('admin/user/borrowList', 'UserController@borrowList');
 });

@@ -12,7 +12,7 @@
                     <option value="">选择搜索类型</option>
                     @if(!empty($getType))
                         @foreach($getType as $key => $value)
-                            <option value="{{$key}}">{{$value}}</option>
+                            <option value="{{$key}}" @if(!empty($_GET['type']) && $_GET['type'] == $key) selected @endif>{{$value}}</option>
                         @endforeach
                     @endif
                 </select>
@@ -41,6 +41,7 @@
                         <div class="content table-responsive table-full-width">
                             <table class="table table-striped">
                                 <thead>
+                                <th>图书编号</th>
                                 <th>类别</th>
                                 <th>图书名</th>
                                 <th>店铺名称</th>
@@ -53,6 +54,7 @@
                                 <tbody>
                                 @foreach($bookList as $value)
                                     <tr>
+                                        <td>{{$value->bookId}}</td>
                                         <td>{{$bookType["{$value->typeId}"]}}</td>
                                         <td>{{$value->bookName}}</td>
                                         <td>{{$shopType["{$value->shopId}"]}}</td>
@@ -62,8 +64,6 @@
                                         <td>{{$value->status == 1 ? '上架' : '下架'}}</td>
                                         <td style="text-align: center">
                                             <a href="{{url('admin/book/setBookInfo/' . $value->bookId)}}" title="图书编辑" style="margin-left: 3px;"><i class="fa fa-cog"></i></a>
-                                            <a href="{{url('admin/book/borrowBook/' . $value->bookId)}}" title="借出" style="margin-left: 3px;"><i class="fa fa-arrow-left"></i></a>
-                                            <a href="{{url('admin/book/returnBook/' . $value->bookId)}}" title="归还" style="margin-left: 3px;"><i class="fa fa-arrow-right"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -77,9 +77,15 @@
         </div>
     </div>
     <script type="text/javascript">
+        select('{{!empty($_GET['name']) ? $_GET['name'] : ''}}', '{{!empty($_GET['typeValue']) ? $_GET['typeValue'] : ''}}');
         $("#type").change(function () {
+            select('', '', '');
+        });
+
+        function select(name,typeValue)
+        {
             $("#typeValue").html('').hide();
-            $("#nameValue").html('').hide();
+            $("#nameValue").val('').hide();
 
             bookType = {!! json_encode($bookType) !!};
             shopType = {!! json_encode($shopType) !!};
@@ -90,7 +96,7 @@
                 valueData = shopType;
             } else if (type == 'bookName') {
                 $("#typeValue").html('').hide();
-                $("#nameValue").html('').show();
+                $("#nameValue").val(name).show();
                 return true;
             } else {
                 $("#typeValue").html('').hide();
@@ -98,13 +104,17 @@
             }
             html = '';
             for (var key in valueData) {
-                html += '<option value="' + key + '">' + valueData[key] +'</option>';
+                if (typeValue == key) {
+                    html += '<option value="' + key + '" selected >' + valueData[key] +'</option>';
+                } else {
+                    html += '<option value="' + key + '">' + valueData[key] +'</option>';
+                }
             }
             if (html == '') {
                 $("#typeValue").html('').hide();
                 return false;
             }
             $("#typeValue").html(html).show();
-        });
+        }
     </script>
 @stop

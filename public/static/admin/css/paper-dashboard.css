@@ -2,7 +2,7 @@
   position: relative;
   z-index: 2;
   float: right;
-  width: calc(100% - 260px);
+  width: 82%;
   min-height: 100%;
 }
 
@@ -21,7 +21,6 @@
 
 .sidebar,
 .main-panel {
-  overflow: auto;
   max-height: 100%;
   height: 100%;
   -webkit-transition-property: top,bottom;

@@ -2,14 +2,14 @@
 
 /**
  * @author dazhen
- * @example 用于后台获取图书列表查询验证
+ * @example 用于后台用户借书验证
  */
 
-namespace App\Http\Requests\Admin\Book;
+namespace App\Http\Requests\Admin\User;
 
 use App\Http\Requests\Request;
 
-class BookGetListRequest extends Request
+class UserBorrowBookRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,8 +29,9 @@ class BookGetListRequest extends Request
     public function rules()
     {
         return [
-            'type' => 'alpha',
-            'typeValue' => 'integer',
+            'bookId' => 'required|integer|min:1',
+            'num' => 'required|integer|min:1',
+            'userId' => 'required|integer|min:1',
         ];
     }
 }
